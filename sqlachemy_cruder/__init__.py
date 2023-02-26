@@ -4,8 +4,8 @@ __author__ = """Qingsong Fan"""
 __email__ = 'qsfan@qq.com'
 __version__ = '0.1.0'
 
-from .sqlachemy_cruder import CRUDBase
+from .sqlachemy_cruder import CRUDER
 
 __all__ = [
-    'CRUDBase'
+    'CRUDER'
 ]
