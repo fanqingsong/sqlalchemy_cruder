@@ -1,7 +1,3 @@
-from typing import List
-
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 
 from sqlachemy_cruder.sqlachemy_cruder import CRUDBase
 from app.model_item import Item
