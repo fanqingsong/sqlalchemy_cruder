@@ -27,9 +27,7 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, id: Any) -> Optional[ModelType]:
         return self.db.query(self.model).filter(self.model.id == id).first()
 
-    def get_multi(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[ModelType]:
+    def get_multi(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
         return self.db.query(self.model).offset(skip).limit(limit).all()
 
     def create(self, obj_in: CreateSchemaType) -> ModelType:
@@ -40,11 +38,7 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.db.refresh(db_obj)
         return db_obj
 
-    def update(
-        self,
-        db_obj: ModelType,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]]
-    ) -> ModelType:
+    def update(self, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -63,4 +57,3 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.db.delete(obj)
         self.db.commit()
         return obj
-

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""Tests for `sqlachemy_cruder` package."""
+"""Tests for `sqlalchemy_cruder` package."""
 
 import pytest
 from click.testing import CliRunner
 
-from sqlachemy_cruder import cli
+from sqlalchemy_cruder import cli
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def test_command_line_interface():
     runner = CliRunner()
     result = runner.invoke(cli.main)
     assert result.exit_code == 0
-    assert 'sqlachemy_cruder' in result.output
+    assert 'sqlalchemy_cruder' in result.output
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output

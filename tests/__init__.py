@@ -1,1 +1,1 @@
-"""Unit test package for sqlachemy_cruder."""
+"""Unit test package for sqlalchemy_cruder."""

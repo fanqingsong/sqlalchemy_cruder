@@ -1,7 +1,7 @@
-site_name: sqlachemy_cruder
-site_url: https://fanqingsong.github.io/sqlachemy_cruder
-repo_url: https://github.com/fanqingsong/sqlachemy_cruder
-repo_name: fanqingsong/sqlachemy_cruder
+site_name: sqlalchemy_cruder
+site_url: https://fanqingsong.github.io/sqlalchemy_cruder
+repo_url: https://github.com/fanqingsong/sqlalchemy_cruder
+repo_name: fanqingsong/sqlalchemy_cruder
 #strict: true
 nav:
   - Home: index.md
@@ -51,7 +51,7 @@ plugins:
       lang: en
   - mkdocstrings:
       watch:
-        - sqlachemy_cruder
+        - sqlalchemy_cruder
 extra:
   social:
     - icon: fontawesome/brands/twitter
@@ -63,7 +63,7 @@ extra:
       link: https://github.com/waynerv/cookiecutter-pypackage
       name: Facebook
     - icon: fontawesome/brands/github
-      link: https://github.com/fanqingsong/sqlachemy_cruder
+      link: https://github.com/fanqingsong/sqlalchemy_cruder
       name: Github
     - icon: material/email
       link: "mailto:qsfan@qq.com"

@@ -1,4 +1,4 @@
-sources = sqlachemy_cruder
+sources = sqlalchemy_cruder
 
 .PHONY: test format lint unittest coverage pre-commit clean
 test: format lint unittest
