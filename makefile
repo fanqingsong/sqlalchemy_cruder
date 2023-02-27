@@ -17,6 +17,14 @@ unittest:
 coverage:
 	pytest --cov=$(sources) --cov-branch --cov-report=term-missing tests
 
+release: dist ## package and upload a release
+	twine upload dist/*
+
+dist: clean ## builds source and wheel package
+	python setup.py sdist
+	python setup.py bdist_wheel
+	ls -l dist
+
 pre-commit:
 	pre-commit run --all-files
 
