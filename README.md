@@ -21,6 +21,24 @@ provide crud utils
 
 * TODO
 
+
+## Usages
+
+* RUN
+```bash
+#pip install sqlalchemy_cruder
+
+#python -m sqlalchemy_cruder --help
+
+source .venv/bin/activate
+
+uv install -r pyproject.toml
+
+python app.main.py
+python app.main_stmt.py
+```
+
+
 ## Credits
 
 This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [waynerv/cookiecutter-pypackage](https://github.com/waynerv/cookiecutter-pypackage) project template.
