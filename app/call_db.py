@@ -1,10 +1,10 @@
 import logging
 
-from app.crud_item import CRUDItem
+from app.cruder.crud_item import CRUDItem
 from app.db import base  # noqa: F401
 from app.db.session import engine
-from app.model_item import Item
-from app.schema_item import ItemCreate, ItemUpdate
+from app.model.model_item import Item
+from app.schema.schema_item import ItemCreate, ItemUpdate
 from app.db.session import SessionLocal
 
 
@@ -24,22 +24,22 @@ def call_db() -> None:
         description='ttt'
     )
 
-    item = CRUDItem(Item, SessionLocal())
+    item = CRUDItem(Item, SessionLocal)
 
     item.create(item_in)
 
-    res = item.get(1)
+    res = item.query_by_id(1)
     logging.info(res.__dict__)
 
-    item_in = ItemUpdate(
+    item_update = ItemUpdate(
         title='sss11',
         description='ttt11'
     )
-    res = item.update(res, item_in)
+    res = item.update(res, item_update)
     logging.info(res.__dict__)
 
-    res = item.get_multi()
-    logging.info(res)
+    res_multi = item.query_by_pagination()
+    logging.info(res_multi)
 
 
 

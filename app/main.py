@@ -8,7 +8,7 @@ sys.path.append(project_root)
 
 
 
-from app.db.call_db import call_db
+from app.call_db import call_db
 
 
 logging.basicConfig(level=logging.INFO)
