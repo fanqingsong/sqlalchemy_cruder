@@ -24,21 +24,21 @@ def call_db() -> None:
         description='ttt'
     )
 
-    item = CRUDItem(Item, SessionLocal)
+    item_cruder = CRUDItem(Item, SessionLocal)
 
-    item.create(item_in)
+    item_cruder.create(item_in)
 
-    res = item.query_by_id(1)
+    res = item_cruder.query_by_id(1)
     logging.info(res.__dict__)
 
     item_update = ItemUpdate(
         title='sss11',
         description='ttt11'
     )
-    res = item.update(res, item_update)
+    res = item_cruder.update(res, item_update)
     logging.info(res.__dict__)
 
-    res_multi = item.query_by_pagination()
+    res_multi = item_cruder.query_by_pagination()
     logging.info(res_multi)
 
 

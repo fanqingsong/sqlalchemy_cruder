@@ -1,4 +1,3 @@
-"""Main module."""
 
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from contextlib import contextmanager
@@ -45,6 +44,18 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         finally:
             db.close()
 
+    @contextmanager
+    def transaction(self):
+        db = self.session_maker()
+        try:
+            yield db
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            db.close()
+
     def query_by_condition(self, condition: CreateSchemaType) -> List[ModelType]:
         """
         根据指定的 BaseModel 对象条件查询数据库记录。
@@ -68,6 +79,14 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def query_by_pagination(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
         with self.get_db_session() as db:
             return db.query(self.model).offset(skip).limit(limit).all()
+
+    def query_by_like(self, field: str, value: str) -> List[ModelType]:
+        with self.get_db_session() as db:
+            return db.query(self.model).filter(getattr(self.model, field).like(f"%{value}%")).all()
+
+    def query_by_range(self, field: str, start: Any, end: Any) -> List[ModelType]:
+        with self.get_db_session() as db:
+            return db.query(self.model).filter(getattr(self.model, field).between(start, end)).all()
 
     def create(self, obj_in: CreateSchemaType) -> ModelType:
         with self.get_db_session() as db:
@@ -99,3 +118,79 @@ class CRUDER(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             db.delete(obj)
             db.commit()
             return obj
+
+    def create_multi(self, objs_in: List[CreateSchemaType]) -> List[ModelType]:
+        with self.transaction() as db:
+            db_objs = []
+            for obj_in in objs_in:
+                obj_in_data = jsonable_encoder(obj_in)
+                db_obj = self.model(**obj_in_data)
+                db.add(db_obj)
+                db_objs.append(db_obj)
+            return db_objs
+
+    def update_multi(self, db_objs: List[ModelType], obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> List[ModelType]:
+        with self.transaction() as db:
+            if isinstance(obj_in, dict):
+                update_data = obj_in
+            else:
+                update_data = obj_in.dict(exclude_unset=True)
+            for db_obj in db_objs:
+                obj_data = jsonable_encoder(db_obj)
+                for field in obj_data:
+                    if field in update_data:
+                        setattr(db_obj, field, update_data[field])
+                db.add(db_obj)
+            return db_objs
+
+    def remove_multi(self, ids: List[int]) -> List[Optional[ModelType]]:
+        with self.transaction() as db:
+            removed_objs = []
+            for id in ids:
+                obj = db.query(self.model).get(id)
+                if obj:
+                    db.delete(obj)
+                    removed_objs.append(obj)
+            return removed_objs
+
+    def combined_operation(self, create_obj: CreateSchemaType, update_obj: ModelType, update_data: Union[UpdateSchemaType, Dict[str, Any]]):
+        with self.transaction() as db:
+            # 创建操作
+            obj_in_data = jsonable_encoder(create_obj)
+            db_create_obj = self.model(**obj_in_data)
+            db.add(db_create_obj)
+
+            # 更新操作
+            if isinstance(update_data, dict):
+                update_dict = update_data
+            else:
+                update_dict = update_data.dict(exclude_unset=True)
+            for field in jsonable_encoder(update_obj):
+                if field in update_dict:
+                    setattr(update_obj, field, update_dict[field])
+            db.add(update_obj)
+
+            return db_create_obj, update_obj
+
+    def execute_query(self, statement) -> List[ModelType]:
+        """
+        执行查询语句
+        :param statement: SQLAlchemy 查询语句
+        :return: 查询结果列表
+        """
+        with self.get_db_session() as db:
+            result = db.execute(statement)
+            return result.scalars().all()
+
+    def execute_statement(self, statement) -> int:
+        """
+        执行非查询语句（如更新、删除等）
+        :param statement: SQLAlchemy 非查询语句
+        :return: 受影响的行数
+        """
+        with self.get_db_session() as db:
+            result = db.execute(statement)
+            db.commit()
+            return result.rowcount
+
+
